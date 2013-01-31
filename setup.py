@@ -15,7 +15,7 @@ install_requires = [
 ]
 
 
-setup(name='pydwell',
+setup(name='dwell',
     version=version,
     description="Stable CL Python packages",
     long_description=README + '\n\n' + NEWS,
@@ -33,6 +33,6 @@ setup(name='pydwell',
     install_requires=install_requires,
     entry_points={
         'console_scripts':
-            ['pydwell=pydwell:main']
+            ['dwell=dwell:main']
     }
 )
