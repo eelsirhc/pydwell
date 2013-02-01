@@ -6,7 +6,7 @@ speed up the functions.
 
 #planck module
 import numpy as np
-import Jura.constants as const
+import dwell.constants as const
 
 
 def planck_wavelength(wavelength, temp):
@@ -235,6 +235,6 @@ def st4(temp):
     return bb
 
 if __name__=="__main__":
-    import Jura.planck.test_planck as pp
+    import dwell.testing.test_planck as pp
     c = pp.test_planck()
-    c.alltest()
+    c.allt()
