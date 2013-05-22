@@ -6,9 +6,9 @@ def copy_attributes(ncin, ncout,exclude=None, include=None):
     att_dict = odict()
     for attribute_name in ncin.ncattrs():
         if include is not None and attribute_name not in include:
-            break #if include is defined, and this attribute is not there
+            continue #if include is defined, and this attribute is not there
         if exclude is not None and attribute_name in exclude:
-            break #if exclude is defined, and this attribute is there
+            continue #if exclude is defined, and this attribute is there
         att_dict[attribute_name]  = ncin.getncattr(attribute_name)
     ncout.setncatts(att_dict)
 
@@ -79,7 +79,7 @@ def ensemble_define_variables(ncin, ncout, dimension_name="mode"):
         data = ncin[0].variables[varname]
         if data.dtype == "S1":
             ncout.variables[varname][:,0] = data[:]
-            break
+            continue
         #else
         m, v = data[:] * iDenom, data[:] * data[:] * iDenom
         if len(ncin) > 1:
@@ -87,7 +87,6 @@ def ensemble_define_variables(ncin, ncout, dimension_name="mode"):
                 data = nc.variables[varname]
                 m,v = m+data[:]*iDenom, v+data[:]*data[:]*iDenom
         v=v-m*m
-        
         ncout.variables[varname][:,0] = m
         ncout.variables[varname][:,1] = v
         
