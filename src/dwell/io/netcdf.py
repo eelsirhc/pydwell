@@ -12,9 +12,14 @@ def copy_attributes(ncin, ncout,exclude=None, include=None):
         att_dict[attribute_name]  = ncin.getncattr(attribute_name)
     ncout.setncatts(att_dict)
 
-def copy_dimensions(ncin, ncout):
+def copy_dimensions(ncin, ncout, exclude=None, include=None):
     """Copy the file dimensions from input to output"""
     for dimname, dimval in ncin.dimensions.items():
+        if include is not None and dimname not in include:
+            continue #if include is defined, and this attribute is not there
+        if exclude is not None and dimname in exclude:
+            continue #if exclude is defined, and this attribute is there
+
         size = None if dimval.isunlimited() else len(dimval)
         ncout.createDimension(dimname, size=size)
 
