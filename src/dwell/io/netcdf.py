@@ -23,10 +23,15 @@ def copy_dimensions(ncin, ncout, exclude=None, include=None):
         size = None if dimval.isunlimited() else len(dimval)
         ncout.createDimension(dimname, size=size)
 
-def copy_variable_data(ncin, ncout):
+def copy_variable_data(ncin, ncout, include=None, exclude=None):
     "Copy the variable information, but not the data, from input to output"
     
     for varname, variable in ncin.variables.items():
+        if include is not None and varname not in include:
+            continue #if include is defined, and this attribute is not there
+        if exclude is not None and varname in exclude:
+            continue #if exclude is defined, and this attribute is there
+
         datatype = variable.dtype
         dimensions = variable.dimensions
         fill_value = None
@@ -39,9 +44,14 @@ def copy_variable_data(ncin, ncout):
         #get the attributes
         copy_attributes(variable, outvariable, exclude=["missing_value","_FillValue"])
         
-def copy_variables(ncin, ncout):
-    copy_variable_data(ncin, ncout)
+def copy_variables(ncin, ncout,include=None, exclude=None):
+    copy_variable_data(ncin, ncout, include=include, exclude=exclude)
     for varname, variable in ncin.variables.items():
+        if include is not None and varname not in include:
+            continue #if include is defined, and this attribute is not there
+        if exclude is not None and varname in exclude:
+            continue #if exclude is defined, and this attribute is there
+
         ncout.variables[varname][:] = variable[:]
     
 def copy_netcdf(input_filename, output_filename, *args, **kwargs):
