@@ -4,6 +4,7 @@ pyDwell
 This package contains a number of independent modules that are used by other packages.
 
 It currently includes the following modules:
+
 - constants : physical constants derived from NIST data
 - fft : interfaces to scipy, anfft, fftw FFT packages that can deal with 2D data
 - io : NetCDF interface to wrap functions in higher level code
