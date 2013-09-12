@@ -1,23 +1,21 @@
-This file requires editing
+pyDwell
 ==========================
 
-Note to the author: Please add something informative to this README *before*
-releasing your software, as `a little documentation goes a long way`_.  Both
-README.rst (this file) and NEWS.txt (release notes) will be included in your
-package metadata which gets displayed in the PyPI page for your project.
+This package contains a number of independent modules that are used by other packages.
 
-You can take a look at the README.txt of other projects, such as repoze.bfg
-(http://bfg.repoze.org/trac/browser/trunk/README.txt) for some ideas.
-
-.. _`a little documentation goes a long way`: http://www.martinaspeli.net/articles/a-little-documentation-goes-a-long-way
+It currently includes the following modules:
+constants : physical constants derived from NIST data
+fft : interfaces to scipy, anfft, fftw FFT packages that can deal with 2D data
+io : NetCDF interface to wrap functions in higher level code
+planck : Black body calculations and integrators
+rad : development tools, including a colored log package, function deprecation wrapper, file IO debugging wrapper
+smoothing : vector smoothing interface to scipy smoothing and kernels
+caselessdict : A case free dictionary
+testing: internal testing code.
 
 Credits
 -------
 
-- `Distribute`_
-- `Buildout`_
-- `modern-package-template`_
+- Author: `ChristopherLee`_
 
-.. _Buildout: http://www.buildout.org/
-.. _Distribute: http://pypi.python.org/pypi/distribute
-.. _`modern-package-template`: http://pypi.python.org/pypi/modern-package-template
+.. _ChristopherLee: http://christopherlee.co.uk/
