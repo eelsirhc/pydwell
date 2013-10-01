@@ -9,7 +9,7 @@ function _with the same arguments_
 
 license="BSD"
 import warnings
-import dwell.RAD.terminal as t
+import dwell.rad.terminal as t
 warnings.simplefilter("always")
 
 class _deprecated(object):
