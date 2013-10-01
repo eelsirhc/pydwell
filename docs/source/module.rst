@@ -10,3 +10,4 @@ API documentation
    modules/planck.rst
    modules/smoothing.rst
    modules/constants.rst
+   modules/climate/gridding.rst

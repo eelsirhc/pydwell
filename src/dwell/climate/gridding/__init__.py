@@ -74,7 +74,11 @@ def calculate_reverse_indices(incount, full_index, sparse=False):
 
 def calculate_statistics(full_index, weights,
                          bs, square=None, sparse=False, missing_data=None):
-    """ """
+    """
+    Calculates the mean, variance,and count of each bin indexed in full_index with data coming from 
+    weights
+    """
+    
     #we have two data arrays here. The first is the 'full_index' that identifies
     #the bin into which each element goes, and the un-normalized weight of that element
     #in weights. In reality, 'weights' is the data we want to grid. The function we call
@@ -201,10 +205,10 @@ def grid_data(data, bins, mn=None, mx=None,
                 reverse_indices=None, square=None,
                 sparse=False, missing_data=None):
     """Grids data into regular grid of bins
-    data is an N*P numpy array, where:
+    data is an N*M numpy array, where:
     N is the number of data points,
-    M<P is the number of dimensions we are binning over
-    and P-M is the number of dimensions of data we bin.
+    A<M is the number of dimensions we are binning over
+    and D=M-A is the number of dimensions of data we bin.
     Bins can be a list of arrays of bin edges, or a list of
     bin sizes (integers). If bin edges are given, they are
     assumed to be monotonic and used as in bincount. If they
@@ -216,6 +220,50 @@ def grid_data(data, bins, mn=None, mx=None,
     the indices in the data array (along the N dimension) of each
     element that contributes to every bin is stored in a variable
     length array in that bin.
+    
+    :param data: 2-dimensional(N,M) array of data to grid. 
+            The first A columns are used as axes and require corresponding entries 
+            in the bins list. The remaining D columns are data to be binned
+    :type data: numpy array
+
+    :param bins: list of bin edges (upper edge) or bin lengths for each axis in A
+    :type bins: list
+    
+    :param mn: list of bin minima if the bins list contains integer number of bins
+    :type mn: list
+
+    :param mx: list of bin maxima if the bins list contains integer number of bins
+    :type mx: list
+
+    :param reverse_indices: logical to determine if the indices that are used in each grid box are calculated
+    :type reverse_indices: bool
+
+    :param square: logical to determine if the mean of the square data mean(X**2) is returned instead of variance (mean(X**2)-mean(X)**2)
+    :type square: bool
+
+    :param sparse: logical to determine if the sparse method is used instead and a 1D gridded dataset is created
+    :type sparse: bool
+    
+    :param missing_data: list of missing data entries for each data array in D(better to mask arrays instead)
+    :type missing_data: list
+
+
+    :return: Mean, calculated mean value of each grid box
+    :return: Variance, calculated variance of each grid box (or mean of square)
+    :return: Count, number of elements in each grid box
+    
+    With reverse_indices=true
+    
+    :return: ri, array containing a list for each gridpoint containing the index back into D of each datapoint
+    :return: rj, the length of each list in ri
+    
+    Types
+    
+    :rtype: tuple of (numpy (D+1)d, numpy (D+1)d, numpy (D+1)d) (no reverse_indices, no sparse)
+    :rtype: tuple of (numpy 1d, numpy 1d, numpy 1d) (no reverse_indices, sparse)
+    :rtype: tuple of (numpy (D+1)d, numpy (D+1)d, numpy (D+1)d,numpy (D+1)d,numpy (D+1)d) (reverse_indices, no sparse)
+    :rtype: tuple of (numpy 1d, numpy 1d, numpy 1d,numpy 1d,numpy 1d) (reverse_indices, sparse)
+
     """
     #glossary
     #axis/axes = The first M rows of data that are used to filter the data into a grid
