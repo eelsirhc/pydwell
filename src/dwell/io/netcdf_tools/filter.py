@@ -105,10 +105,10 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
     
 def select_data(var, newtime):
     """select the new data from var corresponding to indices given in newtime"""
-    #if index of time is -1 only
+    #if index of time is 0 only
     #thats annnnoying
     if len(var.shape) == 2:
-        return var[:,newtime]
+        return var[newtime]
     elif len(var.shape) ==1: 
         #print var[newtime]
         return var[newtime]
