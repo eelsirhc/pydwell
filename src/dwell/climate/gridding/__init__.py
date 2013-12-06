@@ -155,8 +155,8 @@ def calculate_statistics(full_index, weights,
         array_length = sz
         shp = bs
     else:
-        array_length = np.max(fi_inverse + 1)
-        shp = np.max(fi_inverse + 1)
+        array_length = np.max(fi_inverse) + 1
+        shp = np.max(fi_inverse) + 1
     #construct the output arrays
     m = np.zeros(array_length)
     c = np.zeros(array_length)
@@ -177,6 +177,8 @@ def calculate_statistics(full_index, weights,
     #nonzero
     #if YES sparse, then the indexing is just the locations of nonzero elements
     #which I think is every element in w.
+    forward_index = None
+    forward_index = fi_value
     if w.size:
         if sparse is False:
             index = fi_value[w]
@@ -198,7 +200,8 @@ def calculate_statistics(full_index, weights,
     v = np.reshape(v, shp)
     c = np.reshape(c, shp)
     cf = np.reshape(cf, shp)
-    return (m, v, c, cf)
+    
+    return (m, v, c, cf, forward_index)
 
 
 def grid_data(data, bins, mn=None, mx=None,
@@ -333,7 +336,7 @@ def grid_data(data, bins, mn=None, mx=None,
     #call the calculate_statistics function with the correct shape
     #OR we loop through the data and call the function for each row.
     if r == 1:
-        (m, v, c, cf) = calculate_statistics(full_index, data[:, -1], bs,
+        (m, v, c, cf,forward_index) = calculate_statistics(full_index, data[:, -1], bs,
                                         square=square, sparse=sparse,
                                         missing_data=missing_data)
         count = c
@@ -346,7 +349,7 @@ def grid_data(data, bins, mn=None, mx=None,
         if missing_data is None:
             missing_data = [None for i in range(lb, data.shape[1])]
         for i in range(lb, data.shape[1]):
-            (m, v, c, cf) = calculate_statistics(full_index, data[:, i], bs,
+            (m, v, c, cf, forward_index) = calculate_statistics(full_index, data[:, i], bs,
                                             square=square, sparse=sparse,
                                             missing_data=missing_data[i - lb])
             #If we wanted non-sparse data, m will be Naxis dimensional, so generate
@@ -381,9 +384,10 @@ def grid_data(data, bins, mn=None, mx=None,
     #if we don't want to calculate the reverse indices array, we can stop here
     #otherwise we need to call the appropriate function and add the results
     #to the tuple we return
-    if not reverse_indices:
-        return (m, v, c)
-    else:
-
-        ri, rj = calculate_reverse_indices(count_full, full_index, sparse=sparse)
-        return (m, v, c, ri, rj)
+    result = [m,v,c]
+    if sparse:
+        result.append(forward_index)
+    if reverse_indices:
+        ri, rj = calculate_reverse_indices(count_full, full_index, sparse=sparse)    
+        result.extend([ri,rj])
+    return result
