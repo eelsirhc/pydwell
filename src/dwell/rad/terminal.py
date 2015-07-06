@@ -37,7 +37,10 @@ try:
         parser = ArghParser()
         parser = ArghParser()
         parser.add_argument("--very_verbose", action="store_true")
-        mylog.command_line(parser, progname, default_verbosity="CRITICAL", default_file_verbosity="INFO")
+        parser.add_argument("--logfile",type=str, default="{0}.log".format(progname))
+        parser.add_argument("--verbosity","-v",type=str, default=default_verbosity)
+        parser.add_argument("--file_verbosity","-fv",type=str, default=default_file_verbosity)
+        #mylog.command_line(parser, progname, default_verbosity="CRITICAL", default_file_verbosity="INFO")
 
         parser.add_commands(commands)
         args = parser.parse_args()
