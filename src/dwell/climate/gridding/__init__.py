@@ -312,7 +312,9 @@ def grid_data(data, bins, mn=None, mx=None,
     #Create the index array that is the same shape as the incoming data
     #except for one bin in the last dimension,
     #TODO: I think the s[1]-1 dimension could be len(bs)
-    index = np.zeros((s[0], s[1] - 1), dtype=np.int)
+    #index = np.zeros((s[0], s[1] - 1), dtype=np.int)
+    #implementing the TODO above
+    index = np.zeros((s[0], len(bs)), dtype=np.int)
     #for each index array, call numpy.digitize on the data which calculates
     #the index into the bin array that each element of the axis data appears in.
     #We only use n-1 elements of each bin so that the overflow appears in the last
@@ -335,7 +337,13 @@ def grid_data(data, bins, mn=None, mx=None,
     #if there is only one 'data' row (i.e. 1 non-filterable row) then we need to
     #call the calculate_statistics function with the correct shape
     #OR we loop through the data and call the function for each row.
-    if r == 1:
+    if r==0:
+        (m, v, c, cf,forward_index) = calculate_statistics(full_index, data[:, -1]*0., bs,
+                                        square=square, sparse=sparse
+                                        )
+        count = c
+        count_full = cf
+    elif r == 1:
         (m, v, c, cf,forward_index) = calculate_statistics(full_index, data[:, -1], bs,
                                         square=square, sparse=sparse,
                                         missing_data=missing_data)
