@@ -30,7 +30,7 @@ except:
 
 
 try:
-    from argh import ArghParser
+    from argh import ArghParser, arg
     import log as mylog
     import sys
     def argh_main(progname, commands):

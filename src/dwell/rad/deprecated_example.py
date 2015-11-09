@@ -1,4 +1,4 @@
-from Jura.RAD.deprecated import deprecated
+from dwell.RAD.deprecated import deprecated
 
 def new1():
     print "new1"
