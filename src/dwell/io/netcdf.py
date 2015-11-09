@@ -1,5 +1,5 @@
 import netCDF4
-from ordereddict import OrderedDict as odict
+from collections import OrderedDict as odict
 
 def copy_attributes(ncin, ncout,exclude=None, include=None):
     """Copy the global or variable attributes from the input to the output"""

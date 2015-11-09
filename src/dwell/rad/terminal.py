@@ -33,11 +33,15 @@ try:
     from argh import ArghParser, arg
     import log as mylog
     import sys
-    def argh_main(progname, commands):
-        parser = ArghParser()
+    def argh_main(progname, commands,default_verbosity=None, default_file_verbosity=None):
+        default_verbosity=default_verbosity or "CRITICAL"
+        default_file_verbosity=default_file_verbosity or "CRITICAL"
         parser = ArghParser()
         parser.add_argument("--very_verbose", action="store_true")
-        mylog.command_line(parser, progname, default_verbosity="CRITICAL", default_file_verbosity="INFO")
+        parser.add_argument("--logfile",type=str, default="{0}.log".format(progname))
+        parser.add_argument("--verbosity","-v",type=str, default=default_verbosity)
+        parser.add_argument("--file_verbosity","-fv",type=str, default=default_file_verbosity)
+        #mylog.command_line(parser, progname, default_verbosity="CRITICAL", default_file_verbosity="INFO")
 
         parser.add_commands(commands)
         args = parser.parse_args()
