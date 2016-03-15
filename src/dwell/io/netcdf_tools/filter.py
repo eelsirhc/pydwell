@@ -91,7 +91,7 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
             #keep data that is later than this observation by at least time_threshold seconds
             filter_func = lambda tup: tup[0] > (last_time+time_threshold/86400.)
             if keep_duplicates:
-                filter_func = True
+                filter_func = lambda x: True
             
             new_data = filter(filter_func, zip(new_file_time, ind))
             if len(new_data):
