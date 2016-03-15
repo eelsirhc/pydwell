@@ -12,7 +12,8 @@ def filter_time(time, start_date, end_date):
     return (time >=start_date)&(time<end_date)
     
 def find_indices_to_extract(ncin, time_axis, start_date=None, end_date=None, 
-                            filter_condition=None, filenames=None, log=None):
+                            filter_condition=None, filenames=None, log=None,
+                            keep_duplicates=False):
     """This function finds the indices to extract from each NetCDF filehandle in ncin 
     using the start_date and end_date."""
     if log is None:
@@ -39,10 +40,10 @@ def find_indices_to_extract(ncin, time_axis, start_date=None, end_date=None,
         fcount = fcount + 1
     print count, time_axis
     if count > 0:
-        indices, ncin, count, redundant_ncin = filter_duplicate_times(ncin, time_axis, indices, count, filenames=None)
+        indices, ncin, count, redundant_ncin = filter_duplicate_times(ncin, time_axis, indices, count, filenames=None, keep_duplicates=keep_duplicates)
     return indices, ncin, count, redundant_ncin
 
-def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, time_threshold=1.0, log=None):
+def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, time_threshold=1.0, log=None, keep_duplicates=False):
     """
         Filter the times from ncin to find duplicates.
         1. Starts by finding the minimum and maximum times in each of the available files.
@@ -88,7 +89,11 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
             last_time = result[-1][-1][-1] 
             new_file_time = nc.variables[time_axis][ind]
             #keep data that is later than this observation by at least time_threshold seconds
-            new_data = filter(lambda tup: tup[0] > (last_time+time_threshold/86400.), zip(new_file_time, ind))
+            filter_func = lambda tup: tup[0] > (last_time+time_threshold/86400.)
+            if keep_duplicates:
+                filter_func = True
+            
+            new_data = filter(filter_func, zip(new_file_time, ind))
             if len(new_data):
                 new_time, new_ind = zip(*new_data)
                 result.append([np.array(new_ind),nc,f,t])
@@ -107,7 +112,7 @@ def select_data(var, newtime):
     """select the new data from var corresponding to indices given in newtime"""
     #if index of time is 0 only
     #thats annnnoying
-    if len(var.shape) == 2:
+    if len(var.shape) >= 2:
         return var[newtime]
     elif len(var.shape) ==1: 
         #print var[newtime]
@@ -188,7 +193,7 @@ def create_variables(ncout, time_axis, canonical_ncin, ncin, newtime, log=None, 
                 setattr(newvar,attname, attval)
 
   
-def filter_netcdf(input_files, output_file, time_axis="Time", low_time=None, high_time=None, filter_condition=None, zlib=False, filter_variables=None,log=None):
+def filter_netcdf(input_files, output_file, time_axis="Time", low_time=None, high_time=None, filter_condition=None, zlib=False, filter_variables=None,log=None,keep_duplicates=False):
     """Filter the NetCDF input files based on the time_axis entry from 'low' to 'high' and create
     a new file out of the input files and restrictions. Default values for 0<=time<=9e36 ."""
     infiles = [netCDF4.Dataset(input,'r') for input in input_files]
@@ -200,7 +205,7 @@ def filter_netcdf(input_files, output_file, time_axis="Time", low_time=None, hig
         high_time = 9e36
     
     indices, ncin, count, redundant = find_indices_to_extract(infiles, time_axis, start_date=low_time, end_date=high_time, 
-                                    filter_condition=filter_condition, filenames=input_files,log=log)
+                                                              filter_condition=filter_condition, filenames=input_files,log=log, keep_duplicates=keep_duplicates)
     
     output.createDimension(time_axis, count)
     #create dimensions from first input
