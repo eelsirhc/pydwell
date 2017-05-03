@@ -6,7 +6,7 @@ try:
 except:
     use_cdms2 = False
     
-from _internal import *
+from ._internal import *
 
 import numpy
 

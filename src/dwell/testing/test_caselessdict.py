@@ -1,5 +1,5 @@
 import nose.tools
-from dwell.caselessdict import CaselessDict, fromkeys
+from dwell.caselessdict import CaselessDict
 from dwell.testing import Testing
 
 class test_CaselessDict(object):
@@ -29,17 +29,12 @@ class test_CaselessDict(object):
         self.test.debug("contains")
         assert("a" in a)
         assert(not "b" in a)
-        self.test.debug("has_key")
-        assert(a.has_key("a"))
-        assert(not a.has_key("b"))
-
+        
         self.test.debug("get2")
         assert(a.get("b",2)==2)
         assert(not a.get("b",3)==2)
-        assert(not a.has_key("b"))
         self.test.debug("setdefault")
         assert(a.setdefault("c",3)==3)
-        assert(a.has_key("c"))
         
     def test_addondict(self):
         self.test.debug("update")
@@ -49,18 +44,18 @@ class test_CaselessDict(object):
         a.update(CaselessDict({"A":2,"c":3}))
         assert("c" in a and "b" in a and "a" in a)
         assert(a["a"]==a["A"])
-        self.test.debug("fromkeys")
-        b=fromkeys(["a","b","A"],1)
+        self.test.debug("init")
+        b=CaselessDict(zip(["a","b","A"],[1,2,3]))
         assert(b["a"]==b["A"])
-        assert(b["a"]==1)
+        assert(b["a"]==3)
         assert(len(b.keys())==2)
         #test pop
 
         self.test.debug("pop")
         q=b.pop("a")
-        assert(q==1)
+        assert(q==3)
         assert(len(b.keys())==1)
-        assert(b["b"]==1)
+        assert(b["b"]==2)
         #test pop with different case
         b["a"]=2
         assert(len(b.keys())==2)

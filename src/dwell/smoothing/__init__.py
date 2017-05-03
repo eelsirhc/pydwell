@@ -53,8 +53,8 @@ def oddbox(funcname, boxsize, quiet=False, *args, **kwargs):
     :rtype: integer
     """
     if boxsize % 2 == 0 and not quiet:
-        print """boxsize should be odd ({0} smoothing),
-currently {1}""".format(funcname, boxsize)
+        print("""boxsize should be odd ({0} smoothing),
+currently {1}""".format(funcname, boxsize))
         boxsize+=1
 
     return boxsize

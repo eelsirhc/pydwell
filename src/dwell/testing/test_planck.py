@@ -28,7 +28,6 @@ class test_planck(object):
         print("expected between {0} and {1}".format(
             expected[0], expected[1]))
         print("{0} = {1}".format(funcname,result))
-        print
 
     def test_planck_wavelength(self):
         """Testing Planck wavelength with solar flux
@@ -110,9 +109,9 @@ class test_planck(object):
         error=1e-6
         ta = planck.cfst4_wavelength(wl,wh,t)
         tb = planck.cfst4_wavenumber(10000/wh,10000/wl,t)
-        print "Comparing cfst4_wavelength and cfst4_wavenumber"
-        print "cfst4_wavelength={0}", ta
-        print "cfst4_wavenumber={0}", tb
+        print("Comparing cfst4_wavelength and cfst4_wavenumber")
+        print("cfst4_wavelength={0}".format(ta))
+        print("cfst4_wavenumber={0}".format(tb))
         assert self.test.inRange((ta-tb),[-error,error])
         
     def allt(self):

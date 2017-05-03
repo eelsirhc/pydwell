@@ -61,7 +61,7 @@ class Testing(object):
         functname -- name of test function that called debug
         
         """
-        print "Testing...{0}".format(funcname)
+        print("Testing...{0}".format(funcname))
 
     
     def test_inRange(self):

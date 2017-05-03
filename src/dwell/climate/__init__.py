@@ -1,2 +1,2 @@
-from gridding import *
+from .gridding import *
 
