@@ -1,27 +1,27 @@
 from dwell.RAD.deprecated import deprecated
 
 def new1():
-    print "new1"
+    print("new1")
 
 @deprecated
 def dep1():
-    print "dep1"
+    print ("dep1")
 
 @deprecated(message="new message.")
 def dep2():
-    print "dep2"
+    print ("dep2")
 
 @deprecated(message="new message.", replacement=new1)
 def dep3():
-    print "dep2"
+    print ("dep2")
 
 @deprecated(replacement=new1)
 def dep4():
-    print "dep3"
+    print ("dep3")
 #
 @deprecated(replacement=new1, use_replacement=True)
 def dep5():
-    print "dep4"
+    print ("dep4")
 
 print("Running dep1")
 dep1()

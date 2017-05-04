@@ -1,2 +1,1 @@
-#import netcdf
-pass
+#form .netcdf

@@ -56,8 +56,8 @@ try:
         except KeyboardInterrupt as e:
             log.info("Exiting on Keyboard Interrupt")
             print("Exiting on Keyboard Interrupt")
-        except Exception, e:
-            print ("ERROR: {0}".format(e))
+        except Exception as e:
+            print("ERROR: {0}".format(e))
             log.error(e.message)
             if args.very_verbose:
                 raise

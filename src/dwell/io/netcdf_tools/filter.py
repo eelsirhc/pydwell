@@ -1,6 +1,6 @@
 import numpy as np
 import netCDF4
-from boolfilter import boolfilter
+from .boolfilter import boolfilter
 import logging
 import dwell.io.netcdf as netcdf
 
@@ -38,7 +38,7 @@ def find_indices_to_extract(ncin, time_axis, start_date=None, end_date=None,
         else:
             indices.append([]) #return []
         fcount = fcount + 1
-    print count, time_axis
+    #print(count, time_axis)
     if count > 0:
         indices, ncin, count, redundant_ncin = filter_duplicate_times(ncin, time_axis, indices, count, filenames=None, keep_duplicates=keep_duplicates)
     return indices, ncin, count, redundant_ncin
@@ -70,7 +70,7 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
     #sort function is the first element of the first element of the tuple.
     #i.e. we provide a tuple of elements to sort, the first is the time range tuple.
     sort_function = lambda tup: tup[0][0]
-    new_time, new_nc, new_ind, new_filenames = zip(*sorted(zip(time_range,ncin, indices,filenames)))
+    new_time, new_nc, new_ind, new_filenames = list(zip(*sorted(zip(time_range,ncin, indices,filenames))))
     result = []
     #Now we're sorted, iterate through the files, creating the results list which contains
     #a list corresponding to the files
@@ -93,9 +93,9 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
             if keep_duplicates:
                 filter_func = lambda x: True
             
-            new_data = filter(filter_func, zip(new_file_time, ind))
+            new_data = list(filter(filter_func, list(zip(new_file_time, ind))))
             if len(new_data):
-                new_time, new_ind = zip(*new_data)
+                new_time, new_ind = list(zip(*new_data))
                 result.append([np.array(new_ind),nc,f,t])
             else: #no data to append
                 redundant_ncin.append(nc)
@@ -104,8 +104,8 @@ def filter_duplicate_times(ncin, time_axis, indices, count, filenames = None, ti
             result.append([ind, nc, f, t])
             
     #finish the loop
-    count=sum(map(lambda x: len(x[0]), result))
-    newind, newnc, newfilenames, newtime = zip(*result)
+    count = sum([len(x[0]) for x in result])
+    newind, newnc, newfilenames, newtime = list(zip(*result))
     return newind, newnc, count, redundant_ncin
     
 def select_data(var, newtime):
@@ -142,8 +142,8 @@ def create_dimensions(ncout, time_axis, canonical_ncin, log=None):
         log = logging.getLogger("pydwell")
 #    log.debug("Creating Dimensions in NetCDF")
     dim={}
-    obs_variables = filter(lambda x: not x.startswith(time_axis),
-                canonical_ncin.dimensions.keys())
+    obs_variables = [x for x in list(canonical_ncin.dimensions.keys()) if not x.startswith(time_axis)]
+                
     
     for dname in obs_variables:
         dval = canonical_ncin.dimensions[dname]
@@ -163,11 +163,14 @@ def create_variables(ncout, time_axis, canonical_ncin, ncin, newtime, log=None, 
     variables = canonical_ncin.variables
     #filter out data with prefixes
     #filter out data with no time index as the first index.
-    use_variables = filter(lambda x: canonical_ncin.variables[x].dimensions[0] == time_axis, variables)
-    copy_variables = filter(lambda x: time_axis not in canonical_ncin.variables[x].dimensions, variables)
+    #filter(lambda x: canonical_ncin.variables[x].dimensions[0] == time_axis, variables)
+    use_variables = [x for x in variables if canonical_ncin.variables[x].dimensions[0] == time_axis]
+    #filter(lambda x: time_axis not in canonical_ncin.variables[x].dimensions, variables)
+    copy_variables = [x for x in variables if time_axis not in canonical_ncin.variables[x].dimensions]
     netcdf.copy_variables(canonical_ncin, ncout, include=copy_variables)
     if filter_variables is not None:
-        use_variables = filter(lambda x: x in filter_variables,use_variables)
+        #use_variables = filter(lambda x: x in filter_variables,use_variables)
+        use_variables = [x for x in use_variables if x in filter_variables]
     
     for varname in use_variables:
         log.debug("Variable {0}".format(varname))
@@ -177,18 +180,19 @@ def create_variables(ncout, time_axis, canonical_ncin, ncin, newtime, log=None, 
         #collect data for this variable
         data=extract_field(ncin, newtime, varname)
         mydim = canonical_var.dimensions
-        att = dict(
-                    map(
-                        lambda x: (x, getattr(canonical_var,x)),canonical_var.ncattrs()
-                        )
-                )
+        #att = dict(
+        #            map(
+        #                lambda x: (x, getattr(canonical_var,x)),canonical_var.ncattrs()
+        #                )
+        #        )
+        att = [(x,getattr(canonical_var,x)) for x in canonical_var.ncattrs()]
         mytype = canonical_var.dtype
         if "_FillValue" in canonical_var.ncattrs():
             newvar = ncout.createVariable(varname, mytype, mydim, fill_value = getattr(canonical_var, "_FillValue"), zlib=zlib)#
         else:
             newvar = ncout.createVariable(varname, mytype, mydim, zlib=zlib)#
         newvar[:] = data[:] # attributes=att)
-        for attname, attval in att.items():
+        for attname, attval in six.iteritems(att):
             if attname != "_FillValue":
                 setattr(newvar,attname, attval)
 
@@ -211,7 +215,9 @@ def filter_netcdf(input_files, output_file, time_axis="Time", low_time=None, hig
     #create dimensions from first input
     create_dimensions(output, time_axis, ncin[0],log=log)
     create_variables(output, time_axis, ncin[0], ncin, indices, zlib=zlib, filter_variables=filter_variables,log=log)
-    map(lambda x: x.close(), redundant)
-    map(lambda x: x.close(), ncin)
+    for x in redundant:
+        x.close()
+    for x in ncin:
+        x.close()
     output.close()
         

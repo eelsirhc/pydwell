@@ -1,5 +1,5 @@
 """Terminal prompt utilities"""
-
+import six
 # prompt
 def prompt(text=None, choices=None, default=None):
     """Create a prompt of text is given,then offer choices with a default.
@@ -17,14 +17,14 @@ def prompt(text=None, choices=None, default=None):
 
     while True:
         if use_choices is None:
-            ans = raw_input("{text}: ".format(text=text))
+            ans = six.input("{text}: ".format(text=text))
             if not ans:
                 return default
             else:
                 return ans
 
         else:  # choices
-            ans = raw_input("{text} [{choices}]: ".format(text=text,
+            ans = six.input("{text} [{choices}]: ".format(text=text,
                                                     choices=",".join(
                                                     use_choices.keys())))
             for k in use_choices.keys():

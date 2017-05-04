@@ -47,7 +47,7 @@ class _deprecated(object):
                 return self.replacement(*args, **kwargs)
             else:
                 return self.function(*args, **kwargs)
-        except TypeError, e:
+        except TypeError as e:
             if self.use_replacement:
                 return self.replacement()
             else:

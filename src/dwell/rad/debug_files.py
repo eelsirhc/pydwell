@@ -3,9 +3,12 @@ OPENING and CLOSING every time a file is opened/closed, and can print out the li
 of all open files if requested. This module can be used to track down file handle leaks.
 """
 
-import __builtin__
+import builtin
 openfiles = set()
-oldfile = __builtin__.file
+
+oldfile = builtin.file
+oldopen = builtin.open
+
 class newfile(oldfile):
     """Class to wrap the open file function"""
     def __init__(self, *args):
@@ -20,13 +23,10 @@ class newfile(oldfile):
         oldfile.close(self)
         openfiles.remove(self)
 
-oldopen = __builtin__.open
 def newopen(*args):
     """The function to wrap the file/open commands, so that we can log the filenames being
     opened"""
     return newfile(*args)
-__builtin__.file = newfile
-__builtin__.open = newopen
 
 def listOpenFiles():
     """Returns the list of open files"""
@@ -35,3 +35,6 @@ def listOpenFiles():
 def printOpenFiles():
     """Prints the list of open files"""
     print ("*** {0} OPEN FILES: [{1}]".format((len(openfiles), ", ".join(f.name for f in openfiles))))
+
+builtin.file = newfile
+builtin.open = newopen

@@ -290,7 +290,7 @@ def grid_data(data, bins, mn=None, mx=None,
     else:
         #if non-lists (int,long,float) are given, assume they are nbins
         #convert them to longs
-        bs = [long(b) for b in bins]
+        bs = [int(b) for b in bins]
 
         #if min or max are not given, calculate them
         if mn is None:

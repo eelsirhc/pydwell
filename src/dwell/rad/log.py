@@ -2,6 +2,7 @@
 terminal, or non-color to files"""
 # termcolor
 # if we have the termcolor package, then colorize some text.
+import six
 try:
     from termcolor import cprint, colored
     def colorize(color, on_color=None):
@@ -101,7 +102,7 @@ def ProgramLogger(name, destinations):
     if len(log.handlers):
         return log
     log.setLevel(DEBUG)
-    for key, dest in destinations.items():
+    for key, dest in six.iteritems(destinations):
         handle = handler(level=dest.get("level", DEBUG),
                          form=dest.get("form", None),
                          filename=dest.get("filename", None),
@@ -130,7 +131,7 @@ def log_level(lookfor):
     if lookfor.lower() in levels:
         return levels[lookfor.lower()],lookfor.lower()
     else:
-        for k,v in levels.items():
+        for k,v in six.iteritems(levels):
             l=len(str(k)) if len(str(k)) < len(lookfor) else len(lookfor)
             if str(k)[0:l].lower() == lookfor.lower():
                 return v,k

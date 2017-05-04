@@ -1,5 +1,6 @@
 import netCDF4
 from collections import OrderedDict as odict
+import six
 
 def copy_attributes(ncin, ncout,exclude=None, include=None):
     """Copy the global or variable attributes from the input to the output"""
@@ -14,7 +15,7 @@ def copy_attributes(ncin, ncout,exclude=None, include=None):
 
 def copy_dimensions(ncin, ncout, exclude=None, include=None):
     """Copy the file dimensions from input to output"""
-    for dimname, dimval in ncin.dimensions.items():
+    for dimname, dimval in six.iteritems(ncin.dimensions):
         if include is not None and dimname not in include:
             continue #if include is defined, and this attribute is not there
         if exclude is not None and dimname in exclude:
@@ -26,7 +27,7 @@ def copy_dimensions(ncin, ncout, exclude=None, include=None):
 def copy_variable_data(ncin, ncout, include=None, exclude=None):
     "Copy the variable information, but not the data, from input to output"
     
-    for varname, variable in ncin.variables.items():
+    for varname, variable in six.iteritems(ncin.variables):
         if include is not None and varname not in include:
             continue #if include is defined, and this attribute is not there
         if exclude is not None and varname in exclude:
@@ -46,7 +47,7 @@ def copy_variable_data(ncin, ncout, include=None, exclude=None):
         
 def copy_variables(ncin, ncout,include=None, exclude=None):
     copy_variable_data(ncin, ncout, include=include, exclude=exclude)
-    for varname, variable in ncin.variables.items():
+    for varname, variable in six.iteritems(ncin.variables):
         if include is not None and varname not in include:
             continue #if include is defined, and this attribute is not there
         if exclude is not None and varname in exclude:
@@ -69,7 +70,7 @@ def ensemble_define_variables(ncin, ncout, dimension_name="mode"):
     #create new dimension
     ncout.createDimension(dimension_name, 2)
     ensemble_variables = []
-    for varname, variable in ncin[0].variables.items():
+    for varname, variable in six.iteritems(ncin[0].variables):
         datatype = variable.dtype
         dimensions = variable.dimensions
         if len(dimensions) == 1 and varname in dimensions:

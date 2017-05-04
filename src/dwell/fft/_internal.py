@@ -181,7 +181,7 @@ def trans_array(data, _axes):
     :rtype: tuple of integers
     
     """
-    ind = range(data.ndim)
+    ind = list(range(data.ndim))
     try:
         axes = list(_axes)
     except: #integer
