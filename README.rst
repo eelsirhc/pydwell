@@ -17,6 +17,6 @@ It currently includes the following modules:
 Credits
 -------
 
-- Author: `ChristopherLee`_
+- Author: `Christopher Lee`_
 
-.. _ChristopherLee: http://christopherlee.co.uk/
+.. _Christopher Lee: http://christopherlee.co.uk/
