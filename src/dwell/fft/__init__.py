@@ -32,7 +32,11 @@ def spec1d(data, d1, use_axes=0):
     ft = rffttruncate(ft,internal_use_axes[0])
     #double amplitude and correct 0,0
     ft=ft*2.0
-    ft[0]=ft[0]*0.5
+
+    #build the slice accessor to half the zeroth bin
+    sl = [slice(None)]*ft.ndim
+    sl[use_axes]=0
+    ft[sl]=ft[sl]*0.5
 
     amp = numpy.abs(ft)
     pha = numpy.arctan2(numpy.imag(ft), numpy.real(ft))
@@ -101,7 +105,13 @@ def truncate_fft(ft, d1, d2, use_axes, atmosphere=None, ocean=None):
         ft = rffttruncate(ft,use_axes[0])
         #double amplitude and correct 0,0
         ft=ft*2.0
-        ft[0,0]=ft[0,0]*0.5
+        #build the slice accessor to half the zeroth bin
+        sl = [slice(None)]*ft.ndim
+        for u in use_axes:
+            sl[u]=0
+        
+        ft[sl]=ft[sl]*0.5
+        
         f2 = fftshift(f2, 0)
         ft = fftshift(ft,use_axes[1])
         
@@ -112,7 +122,12 @@ def truncate_fft(ft, d1, d2, use_axes, atmosphere=None, ocean=None):
         f2 = -rffttruncate(f2,0)
         ft = rffttruncate(ft,use_axes[1])
         ft=ft*2.0
-        ft[0,0]=ft[0,0]*0.5
+        #build the slice accessor to half the zeroth bin
+        sl = [slice(None)]*ft.ndim
+        for u in use_axes:
+            sl[u]=0
+        
+        ft[sl]=ft[sl]*0.5
         f1 = fftshift(f1, 0)
         ft = fftshift(ft, use_axes[0])
         pass
