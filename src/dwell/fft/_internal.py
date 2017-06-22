@@ -99,10 +99,9 @@ def rffttruncate(ft, axis):
 
     n=ft2.shape[axis]
     if odd(n):
-        x = (n-1)/2
+        x = int((n-1)/2)
     else:
-        x=n/2-1
-    x=int(x)
+        x = int(n/2-1)
     d[axis]=slice(-1,x-1,-1)
     return ft2[d]
 
@@ -128,10 +127,9 @@ def ffttruncate(ft, axis):
 
     n=ft.shape[axis]
     if odd(n):
-        x = (n+1)/2
+        x = int((n+1)/2)
     else:
-        x=n/2
-    x=int(x)
+        x=int(n/2)
     d[axis]=slice(None,x,None)
     return ft[d]
 
