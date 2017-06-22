@@ -31,7 +31,7 @@ except:
 
 try:
     from argh import ArghParser, arg
-    import log as mylog
+    import dwell.rad.log as mylog
     import sys
     def argh_main(progname, commands,default_verbosity=None, default_file_verbosity=None):
         default_verbosity=default_verbosity or "CRITICAL"
@@ -63,7 +63,8 @@ try:
                 raise
             else:
                 sys.exit(1)
-except:
+except Exception as e:
+    print(e)
     def argh_main(progname, commands):
         print ("Import of argh module failed")
         import sys
