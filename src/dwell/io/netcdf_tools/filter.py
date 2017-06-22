@@ -192,7 +192,7 @@ def create_variables(ncout, time_axis, canonical_ncin, ncin, newtime, log=None, 
         else:
             newvar = ncout.createVariable(varname, mytype, mydim, zlib=zlib)#
         newvar[:] = data[:] # attributes=att)
-        for attname, attval in six.iteritems(att):
+        for attname, attval in att:
             if attname != "_FillValue":
                 setattr(newvar,attname, attval)
 
