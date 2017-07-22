@@ -58,14 +58,14 @@ try:
             print("Exiting on Keyboard Interrupt")
         except Exception as e:
             print("ERROR: {0}".format(e))
-            log.error(e.message)
+            log.error(e)
             if args.very_verbose:
                 raise
             else:
                 sys.exit(1)
 except Exception as e:
     print(e)
-    def argh_main(progname, commands):
+    def argh_main(progname, commands,default_verbosity=None, default_file_verbosity=None):
         print ("Import of argh module failed")
         import sys
         sys.exit(1)
