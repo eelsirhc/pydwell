@@ -170,8 +170,8 @@ def default_logger(name, logfile=None,
 
     if log_error!="":
         log.error(log_error)
-    log.info("log screenlevel is set to {0}".format(log_level_name))
-    log.info("log filelevel is set to {0}".format(file_level_name))
+    log.debug("log screenlevel is set to {0}".format(log_level_name))
+    log.debug("log filelevel is set to {0}".format(file_level_name))
     
     return log
 

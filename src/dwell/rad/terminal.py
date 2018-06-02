@@ -41,6 +41,8 @@ try:
         parser.add_argument("--logfile",type=str, default="{0}.log".format(progname))
         parser.add_argument("--verbosity","-v",type=str, default=default_verbosity)
         parser.add_argument("--file_verbosity","-fv",type=str, default=default_file_verbosity)
+        parser.add_argument("--timing","-t", default=False, action='store_true')
+        parser.add_argument("--args","-a", default=False, action='store_true')
         #mylog.command_line(parser, progname, default_verbosity="CRITICAL", default_file_verbosity="INFO")
 
         parser.add_commands(commands)
@@ -50,9 +52,24 @@ try:
                                     logfile=args.logfile,
                                     verbosity=args.verbosity, 
                                     file_verbosity=args.file_verbosity)
-    
+
+        if args.args:
+            d=vars(args)
+            log.info(",".join(["{0}={1}".format(k,v) for k,v in d.items()]))
+                     
+        if args.timing:
+            import datetime
+            start = datetime.datetime.now()
+            log.info("Start time: {0}".format(start))
+            
         try:
             parser.dispatch()
+            if args.timing:
+                import datetime
+                end = datetime.datetime.now()
+                log.info("End time: {0}".format(end))
+                log.info("Run time: {0}".format((end-start).total_seconds()))
+
         except KeyboardInterrupt as e:
             log.info("Exiting on Keyboard Interrupt")
             print("Exiting on Keyboard Interrupt")
